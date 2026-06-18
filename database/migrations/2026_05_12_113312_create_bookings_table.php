@@ -6,34 +6,42 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('bookings', function (Blueprint $table) {
-    $table->id();
 
-    // user info
-    $table->string('name');
-    $table->string('email');
-    $table->string('phone');
-    $table->integer('passengers');
+            $table->id();
 
-    // ride info
-    $table->string('pickup_address');
-    $table->string('dropoff_address');
+            // user info
+            $table->string('name');
+            $table->string('email');
+            $table->string('phone');
+            $table->integer('passengers');
 
-    // schedule
-    $table->date('travel_date');
-    $table->time('travel_time');
 
-    $table->timestamps();
-});
+            // ride info
+            $table->string('pickup_address');
+            $table->string('dropoff_address');
+
+
+            // schedule
+            $table->date('travel_date');
+            $table->time('travel_time');
+
+
+            // booking flow
+            $table->string('status')
+                  ->default('pending');
+
+            $table->string('completion_type')
+                  ->nullable();
+
+
+            $table->timestamps();
+        });
     }
-    /**
-     * Reverse the migrations.
-     */
+
+
     public function down(): void
     {
         Schema::dropIfExists('bookings');
