@@ -20,14 +20,13 @@ class BookingRepository implements BookingRepositoryInterface
         'pickup_lat' => $data['pickup_lat'],
         'pickup_lng' => $data['pickup_lng'],
         'pickup_city' => $data['pickup_city'] ?? null,
-        'pickup_place_id' => $data['pickup_place_id'] ?? null,
-
+       
         // DROPOFF
         'dropoff_address' => $data['dropoff_address'],
         'dropoff_lat' => $data['dropoff_lat'],
         'dropoff_lng' => $data['dropoff_lng'],
         'dropoff_city' => $data['dropoff_city'] ?? null,
-        'dropoff_place_id' => $data['dropoff_place_id'] ?? null,
+       
 
         'travel_date' => $data['travel_date'],
         'travel_time' => $data['travel_time'],

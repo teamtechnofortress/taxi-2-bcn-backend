@@ -18,14 +18,14 @@ return new class extends Migration
     $table->decimal('pickup_lng', 10, 7)->nullable();
 
     $table->string('pickup_city')->nullable();
-    $table->string('pickup_place_id')->nullable();
+   
 
     // dropoff
     $table->decimal('dropoff_lat', 10, 7)->nullable();
     $table->decimal('dropoff_lng', 10, 7)->nullable();
 
     $table->string('dropoff_city')->nullable();
-    $table->string('dropoff_place_id')->nullable();
+   
 });
     }
 

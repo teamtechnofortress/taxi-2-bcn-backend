@@ -15,16 +15,19 @@ class Booking extends Model
     'pickup_lat',
     'pickup_lng',
     'pickup_city',
-    'pickup_place_id',
+    
 
     'dropoff_address',
     'dropoff_lat',
     'dropoff_lng',
     'dropoff_city',
-    'dropoff_place_id',
+    
 
     'travel_date',
     'travel_time',
+
+     'status',
+    'completion_type',
 ];
     public function payment()
 {
