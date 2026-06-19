@@ -31,6 +31,11 @@ class BookingRepository implements BookingRepositoryInterface
         'travel_date' => $data['travel_date'],
         'travel_time' => $data['travel_time'],
 
+
+    'status'=>$data['status'],
+
+    'completion_type'=>$data['completion_type'],
+
     ]);
 }
 }
