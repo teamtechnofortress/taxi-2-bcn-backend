@@ -16,35 +16,47 @@ class LocationController extends Controller
         LocationCacheService $cache,
         LocationAutocompleteService $locationService
     ) {
+        $rawKeyword = $request->keyword;
 
         Log::info('Autocomplete request received', [
-            'keyword' => $request->keyword
+            'keyword' => $rawKeyword
         ]);
 
-        $keyword = $locationService->normalize(
-            $request->keyword
-        );
+        if (!$rawKeyword) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'keyword is required'
+            ], 422);
+        }
+
+        /**
+         * Normalize keyword
+         */
+        $keyword = $locationService->normalize($rawKeyword);
 
         Log::info('Keyword normalized', [
-            'original' => $request->keyword,
+            'original' => $rawKeyword,
             'normalized' => $keyword
         ]);
 
+        /**
+         * Find existing search
+         */
         $search = $cache->findSearch($keyword);
 
         Log::info('Search lookup result', [
             'keyword' => $keyword,
             'found' => (bool) $search,
             'search_id' => $search?->id,
-            'status' => $search?->status
+            'status' => $search?->status ?? null
         ]);
 
         /**
-         *  CASE 1: Completed → return cached results
+         * CASE 1: Completed → return cached results
          */
         if ($search && $search->status === 'completed') {
 
-            Log::info('Returning completed results', [
+            Log::info('Returning cached completed results', [
                 'search_id' => $search->id
             ]);
 
@@ -53,40 +65,46 @@ class LocationController extends Controller
                 'results' => $cache->getResults($search->id)
             ]);
         }
-        
-        /**
-         *  CASE 2: Pending OR failed OR stuck → re-trigger job
-         */
-       if ($search && $search->status === 'pending') {
-
-    Log::info('Search already pending, not re-dispatching', [
-        'search_id' => $search->id
-    ]);
-
-    return response()->json([
-        'status' => 'pending'
-    ]);
-}
 
         /**
-         *  CASE 3: No cache at all → create + dispatch job
+         * CASE 2: Pending / Failed / Stuck → re-trigger job safely
          */
-        Log::info('BEFORE CREATE SEARCH', [
-    'keyword' => $keyword
-]);
+        if ($search && in_array($search->status, ['pending', 'failed'])) {
+
+            Log::info('Re-dispatching job for search', [
+                'search_id' => $search->id,
+                'status' => $search->status
+            ]);
+
+            FetchLocationIqAutocompleteJob::dispatch(
+                $search->id,
+                $keyword
+            );
+
+            return response()->json([
+                'status' => 'pending'
+            ]);
+        }
+
+        /**
+         * CASE 3: No cache → create + dispatch
+         */
+        Log::info('Creating new search record', [
+            'keyword' => $keyword
+        ]);
 
         $search = $cache->createSearch($keyword);
 
-        Log::info('AFTER CREATE SEARCH', [
-    'search_id' => $search->id
-]);
+        Log::info('Search created', [
+            'search_id' => $search->id
+        ]);
 
         FetchLocationIqAutocompleteJob::dispatch(
             $search->id,
             $keyword
         );
 
-        Log::info('Autocomplete job dispatched', [
+        Log::info('Job dispatched', [
             'search_id' => $search->id,
             'keyword' => $keyword
         ]);

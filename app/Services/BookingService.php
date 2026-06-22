@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Repositories\Interfaces\BookingRepositoryInterface;
 use App\Repositories\Interfaces\PaymentRepositoryInterface;
+use Stripe\Stripe;
+use Stripe\Checkout\Session;
 
 class BookingService
 {

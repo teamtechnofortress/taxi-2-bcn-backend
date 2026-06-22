@@ -33,28 +33,25 @@ class LocationCacheService
         ->get();
     }
 
-    public function saveResults(
-        int $searchId,
-        array $results
-    ) {
-        foreach ($results as $result) {
+    public function saveResults(int $searchId, array $results)
+{
+    foreach ($results as $result) {
 
-            AutocompleteResult::create([
+        $city = $result['address']['city']
+            ?? $result['address']['town']
+            ?? $result['address']['county']
+            ?? null;
 
-                'search_id' => $searchId,
-
-                'place_id' => $result['place_id'],
-
-                'display_name' => $result['display_name'],
-
-                'city' => $result['city'],
-
-                'lat' => $result['lat'],
-
-                'lon' => $result['lon'],
-            ]);
-        }
+        AutocompleteResult::create([
+            'search_id' => $searchId,
+            'place_id' => $result['place_id'] ?? null,
+            'display_name' => $result['display_name'] ?? null,
+            'city' => $city,
+            'lat' => $result['lat'] ?? null,
+            'lon' => $result['lon'] ?? null,
+        ]);
     }
+}
 
     public function markCompleted(int $searchId)
     {

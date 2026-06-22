@@ -33,7 +33,7 @@ class FetchLocationIqAutocompleteJob implements ShouldQueue
         // $cache->markProcessing($this->searchId);
 
         try {
-            Log::info('LocationIQ Job started', [
+            Log::info('🚀 LocationIQ Job STARTED', [
                 'search_id' => $this->searchId,
                 'keyword' => $this->keyword,
             ]);
@@ -41,53 +41,114 @@ class FetchLocationIqAutocompleteJob implements ShouldQueue
             /*
              * STEP 1: API CALL
              */
+            Log::info('📡 STEP 1: Calling LocationIQ API', [
+                'search_id' => $this->searchId,
+                'keyword' => $this->keyword,
+            ]);
+
             $results = $locationIQ->autocomplete($this->keyword);
 
-            Log::info('LocationIQ raw response', [
+            Log::info('📡 STEP 1 COMPLETE: API response received', [
                 'search_id' => $this->searchId,
                 'type' => gettype($results),
+                'is_array' => is_array($results),
             ]);
-            Log::info('LocationIQ raw response', [
-    'search_id' => $this->searchId,
-    'type' => gettype($results),
-    'response' => $results, // 👈 ADD THIS
-]);
+
+            Log::info('📦 RAW API RESPONSE DUMP', [
+                'search_id' => $this->searchId,
+                'response' => $results,
+            ]);
+
+            /*
+             * STEP 2: VALIDATION
+             */
+            Log::info('🔍 STEP 2: Validating response', [
+                'search_id' => $this->searchId,
+            ]);
 
             if (!is_array($results)) {
+                Log::error('❌ Invalid API response (not array)', [
+                    'search_id' => $this->searchId,
+                    'response' => $results,
+                ]);
+
                 throw new \Exception('Invalid API response from LocationIQ');
             }
-$filtered = $service->filterBarcelona($results) ?? [];
-$filtered = array_slice($filtered, 0, 8);
+
+            Log::info('✅ STEP 2 COMPLETE: Valid response confirmed', [
+                'search_id' => $this->searchId,
+                'count' => count($results),
+            ]);
 
             /*
-             * STEP 3: LIMIT RESULTS (safe fallback)
+             * STEP 3: FILTERING (currently disabled for debugging)
              */
-            $filtered = array_slice($filtered, 0, 8);
+            Log::info('⚙️ STEP 3: Filtering SKIPPED (debug mode)', [
+                'search_id' => $this->searchId,
+                'reason' => 'filtering disabled for testing raw API data',
+            ]);
+
+            // OPTIONAL FILTER (uncomment when needed)
+            // $results = $service->filterLocation($results);
 
             /*
-             * STEP 4: SAVE RESULTS
+             * STEP 4: LIMIT RESULTS
              */
-            $cache->saveResults($this->searchId, $filtered);
+            $limitedResults = array_slice($results, 0, 8);
+
+            Log::info('✂️ STEP 4: Results limited', [
+                'search_id' => $this->searchId,
+                'original_count' => count($results),
+                'final_count' => count($limitedResults),
+            ]);
 
             /*
-             * STEP 5: RATE LIMIT TRACKING
+             * STEP 5: SAVE RESULTS
              */
+            Log::info('💾 STEP 5: Saving results to cache', [
+                'search_id' => $this->searchId,
+            ]);
+
+            $cache->saveResults($this->searchId, $limitedResults);
+
+            Log::info(' STEP 5 COMPLETE: Results saved successfully', [
+                'search_id' => $this->searchId,
+            ]);
+
+            /*
+             * STEP 6: RATE LIMIT TRACKING
+             */
+            Log::info('⏱️ STEP 6: Updating rate limiter', [
+                'search_id' => $this->searchId,
+            ]);
+
             $rateLimiter->attempt();
 
+            Log::info('✅ STEP 6 COMPLETE: Rate limiter updated', [
+                'search_id' => $this->searchId,
+            ]);
+
             /*
-             * STEP 6: MARK COMPLETE
+             * STEP 7: MARK COMPLETED
              */
+            Log::info('🏁 STEP 7: Marking job as completed', [
+                'search_id' => $this->searchId,
+            ]);
+
             $cache->markCompleted($this->searchId);
 
-            Log::info('LocationIQ Job completed', [
+            Log::info('🎉 LocationIQ Job COMPLETED SUCCESSFULLY', [
                 'search_id' => $this->searchId,
             ]);
 
         } catch (\Throwable $e) {
 
-            Log::error('LocationIQ Job failed', [
+            Log::error('💥 LocationIQ Job FAILED', [
                 'search_id' => $this->searchId,
+                'keyword' => $this->keyword,
                 'message' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
             ]);
 
             $cache->markFailed($this->searchId);

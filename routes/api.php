@@ -2,16 +2,24 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AdminBookingController;
 
-Route::get('/user', function (Request $request) {
+/*
+| Default User Route (Sanctum)
+*/
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
-})->middleware('auth:sanctum');
+});
 
 
-Route::get('/test', function () {
-    return response()->json([
-        'status' => 'success',
-        'message' => 'API is working',
-        'time' => now()
-    ]);
+Route::prefix('admin')->group(function () {
+
+    // ALL COMPLETED BOOKINGS (OTP + PAYMENT)
+    Route::get('/bookings', [AdminBookingController::class, 'index']);
+
+    // ONLY STRIPE PAID BOOKINGS
+    Route::get('/bookings/paid', [AdminBookingController::class, 'paid']);
+
+    // ONLY OTP VERIFIED BOOKINGS
+    Route::get('/bookings/otp', [AdminBookingController::class, 'otp']);
 });
