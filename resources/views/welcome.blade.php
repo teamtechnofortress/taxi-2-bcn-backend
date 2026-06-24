@@ -218,8 +218,70 @@ function setMode(type) {
 
 // ── 2. Init
 window.onload = function () {
-    setMode('airportFrom');
+    setMode('');
 };
+function setMode(type) {
+
+    let pickupValue  = '';
+    let dropoffValue = '';
+
+    if(type === 'airportFrom') {
+
+        pickupValue = airportData.display_name;
+
+    }
+
+    if(type === 'airportTo') {
+
+        dropoffValue = airportData.display_name;
+
+    }
+
+
+    let html = `
+        <div class="position-relative col-md-6 mb-3">
+
+            <input
+                type="text"
+                name="pickup_address"
+                id="pickup_address"
+                autocomplete="off"
+                value="${pickupValue}"
+                placeholder="{{ __('messages.pickup') }}">
+
+            <div id="pickup-results"></div>
+
+            <input type="hidden" name="pickup_lat" value="${type === 'airportFrom' ? airportData.lat : ''}">
+            <input type="hidden" name="pickup_lng" value="${type === 'airportFrom' ? airportData.lon : ''}">
+            <input type="hidden" name="pickup_city" value="${type === 'airportFrom' ? airportData.city : ''}">
+            <input type="hidden" name="pickup_place_id" value="${type === 'airportFrom' ? airportData.place_id : ''}">
+
+        </div>
+
+
+        <div class="position-relative col-md-6 mb-3">
+
+            <input
+                type="text"
+                name="dropoff_address"
+                id="dropoff_address"
+                autocomplete="off"
+                value="${dropoffValue}"
+                placeholder="{{ __('messages.dropoff') }}">
+
+            <div id="dropoff-results"></div>
+
+            <input type="hidden" name="dropoff_lat" value="${type === 'airportTo' ? airportData.lat : ''}">
+            <input type="hidden" name="dropoff_lng" value="${type === 'airportTo' ? airportData.lon : ''}">
+            <input type="hidden" name="dropoff_city" value="${type === 'airportTo' ? airportData.city : ''}">
+            <input type="hidden" name="dropoff_place_id" value="${type === 'airportTo' ? airportData.place_id : ''}">
+
+        </div>
+    `;
+
+
+    document.getElementById('dynamic-row').innerHTML = html;
+}
 
 // ── 3. Input listener
 document.addEventListener('keyup', function (e) {

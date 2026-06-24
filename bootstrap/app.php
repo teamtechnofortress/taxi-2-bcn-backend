@@ -13,16 +13,28 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
 
-    ->withMiddleware(function (Middleware $middleware) {
+   ->withMiddleware(function (Middleware $middleware) {
 
-        $middleware->web(append: [
-    \App\Http\Middleware\SetLocale::class,
-]);
- $middleware->validateCsrfTokens(except: [
+    $middleware->web(append: [
+        \App\Http\Middleware\SetLocale::class,
+    ]);
+
+    $middleware->validateCsrfTokens(except: [
         'stripe/webhook',
     ]);
 
-    })
+    $middleware->alias([
+        'admin' => \App\Http\Middleware\AdminMiddleware::class,
+    ]);
+    $middleware->redirectGuestsTo(function ($request) {
+
+        if ($request->is('api/*')) {
+            return null;
+        }
+        return route('login');
+    });
+
+})
 
     ->withExceptions(function (Exceptions $exceptions) {
         //
