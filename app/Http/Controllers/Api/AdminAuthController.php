@@ -12,10 +12,10 @@ class AdminAuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'name'=>'required',
+             'email'=>'required|email',
             'password'=>'required'
         ]);
-        $user = User::where('name',$request->name)->first();
+        $user = User::where('email',$request->email)->first();
         if(!$user || !Hash::check($request->password,$user->password))
         {
             return response()->json([
@@ -28,9 +28,25 @@ class AdminAuthController extends Controller
                 'message'=>'Admin access only'
             ],403);
         }
-        $token = $user->createToken('admin-token')
-                      ->plainTextToken;
 
+
+           $token = $user->tokens()
+                      ->where('name','admin-token')
+                      ->first();
+        if(!$token)
+        {
+            $token = $user->createToken('admin-token')
+                          ->plainTextToken;
+
+        }
+        else
+        {
+            $token = $token->token;
+            $token = $user->tokens()
+                          ->where('name','admin-token')
+                          ->first()
+                          ->plainTextToken ?? $token;
+        }
         return response()->json([
             'status'=>true,
             'message'=>'Admin login successful',

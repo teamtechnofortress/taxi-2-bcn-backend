@@ -28,16 +28,35 @@ return Application::configure(basePath: dirname(__DIR__))
     ]);
     $middleware->redirectGuestsTo(function ($request) {
 
-        if ($request->is('api/*')) {
-            return null;
-        }
-        return route('login');
-    });
+    if ($request->expectsJson() || $request->is('api/*')) {
+
+        return response()->json([
+            'message' => 'Unauthorized',
+            'status' => false
+        ], 401);
+
+    }
+
+    abort(401);
+
+});
 
 })
 
     ->withExceptions(function (Exceptions $exceptions) {
-        //
-    })
 
+    $exceptions->render(function (\Illuminate\Auth\AuthenticationException $e, $request) {
+
+        if ($request->is('api/*')) {
+
+            return response()->json([
+                'message' => 'Unauthorized',
+                'status' => false
+            ], 401);
+
+        }
+
+    });
+
+})
     ->create();
