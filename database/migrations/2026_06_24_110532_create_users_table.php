@@ -8,20 +8,20 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+       Schema::create('users', function (Blueprint $table) {
 
-            $table->id();
+    $table->id();
 
-            $table->string('name');
+    $table->string('name');
 
-            $table->string('password');
+    $table->string('password');
 
-            $table->boolean('is_admin')
-                ->default(false);
+    $table->boolean('is_admin')
+        ->default(false);
 
-            $table->timestamps();
+    $table->timestamps();
 
-        });
+});
     }
 
 
