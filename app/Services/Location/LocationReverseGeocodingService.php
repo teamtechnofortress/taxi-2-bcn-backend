@@ -23,12 +23,22 @@ class LocationReverseGeocodingService
     }
 
     public function getCity($lat, $lng)
-    {
-        $data = $this->getAddress($lat, $lng);
+{
+    $data = $this->getAddress($lat, $lng);
 
-        return $data['address']['city']
-            ?? $data['address']['town']
-            ?? $data['address']['county']
-            ?? null;
+    if(!$data || !isset($data['address'])){
+        return null;
     }
+
+
+    $address = $data['address'];
+
+
+    return $address['city']
+        ?? $address['town']
+        ?? $address['municipality']
+        ?? $address['county']
+        ?? $address['village']
+        ?? null;
+}
 }

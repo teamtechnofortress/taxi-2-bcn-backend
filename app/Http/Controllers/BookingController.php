@@ -59,11 +59,10 @@ class BookingController extends Controller
 
         $pickupInside = $this->isAllowedCity($pickupCity);
         $dropoffInside = $this->isAllowedCity($dropoffCity);
-Log::info('LOCATION CHECK', [
-    'pickup_city' => $pickupCity,
-    'dropoff_city' => $dropoffCity,
-    'pickup_inside' => $this->isAllowedCity($pickupCity),
-    'dropoff_inside' => $this->isAllowedCity($dropoffCity),
+Log::info('CITY CHECK',[
+    'pickup'=>$pickupCity,
+    'dropoff'=>$dropoffCity,
+    'allowed'=>config('locationiq.allowed_cities')
 ]);
     
         /*
@@ -71,11 +70,13 @@ Log::info('LOCATION CHECK', [
         */
         if($pickupInside && $dropoffInside)
         {
-            $booking = $this->bookingService->createBooking([
-                ...$validated,
-                'status' => 'processing',
-                'completion_type' => 'payment'
-            ]);
+           $booking = $this->bookingService->createBooking([
+    ...$validated,
+    'pickup_city' => $pickupCity,
+    'dropoff_city' => $dropoffCity,
+    'status' => 'processing',
+    'completion_type' => 'payment'
+]);
 
             $payment = $this->bookingService->createPayment([
                 'booking_id' => $booking->id,
@@ -207,23 +208,31 @@ Log::info('BOOKING UPDATED', $booking->toArray());
         return view('verify-email');
     }
     private function isAllowedCity($city)
-    {
-        if(!$city)
-        {
-            return false;
-        }
-        $allowedCities = config('locationiq.allowed_cities');
-        $city = strtolower(trim($city));
-        foreach($allowedCities as $allowedCity)
-        {
-            $allowedCity = strtolower(trim($allowedCity));
-            if($city == $allowedCity)
-            {
-                return true;
-            }
-        }
+{
+    if(!$city){
         return false;
     }
+
+
+    $city = strtolower(trim($city));
+
+
+    foreach(config('locationiq.allowed_cities') as $allowedCity)
+    {
+
+        $allowedCity = strtolower(trim($allowedCity));
+
+
+        if(str_contains($city, $allowedCity))
+        {
+            return true;
+        }
+
+    }
+
+
+    return false;
+}
     public function success()
     {
         return view('success');

@@ -41,40 +41,19 @@ class BookingRepository implements BookingRepositoryInterface
     /*
     ADMIN READ APIs
     */
-
-    // ALL COMPLETED BOOKINGS (OTP + PAYMENT)
-    public function getCompletedBookings()
+   public function getBookings($type = null, $perPage = 10)
     {
-        return Booking::with('payment')
-            ->where('status', 'completed')
-            ->latest()
-            ->get();
-    }
+        $query = Booking::with('payment')
+            ->where('status', 'completed');
 
-    // ONLY STRIPE PAID BOOKINGS
-    public function getPaidBookings()
-    {
-        return Booking::with('payment')
-            ->where('status', 'completed')
-            ->where('completion_type', 'payment')
-            ->latest()
-            ->get();
-    }
+        if ($type === 'payment') {
+            $query->where('completion_type', 'payment');
+        }
 
-    // ONLY OTP VERIFIED BOOKINGS
-    public function getOtpBookings()
-    {
-        return Booking::where('status', 'completed')
-            ->where('completion_type', 'otp')
-            ->latest()
-            ->get();
-    }
+        if ($type === 'otp') {
+            $query->where('completion_type', 'otp');
+        }
 
-    // OPTIONAL: PENDING / PROCESSING
-    public function getPendingBookings()
-    {
-        return Booking::where('status', 'pending')
-            ->latest()
-            ->get();
+        return $query->latest()->paginate($perPage);
     }
 }

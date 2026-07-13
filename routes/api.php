@@ -21,15 +21,6 @@ Route::prefix('admin')->group(function () {
         );
 
 
-        Route::get('/bookings/paid',
-            [AdminBookingController::class,'paid']
-        );
-
-
-        Route::get('/bookings/otp',
-            [AdminBookingController::class,'otp']
-        );
-
 
     });
 
