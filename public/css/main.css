@@ -1,3 +1,4 @@
+
 /* ============ Hero ============ */
 
 .hero-section {
@@ -48,21 +49,31 @@
     max-width: 380px;
 }
 
+
 /* ============ Booking card ============ */
 
 .booking-card {
-    background: linear-gradient(180deg, rgba(20, 20, 20, 0.72) 0%, rgba(10, 10, 10, 0.72) 100%);
+    background: linear-gradient(
+        180deg,
+        rgba(20, 20, 20, 0.72) 0%,
+        rgba(10, 10, 10, 0.72) 100%
+    );
+
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
+
     border: 1px solid rgba(255, 176, 0, 0.14);
     border-radius: 24px;
+
     padding: 34px 34px 30px;
+
     box-shadow:
         0 30px 70px rgba(0, 0, 0, 0.45),
         inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
-/* ============ Tabs — flex, right-aligned, above the inputs ============ */
+
+/* ============ Tabs ============ */
 
 .booking-tabs {
     display: flex;
@@ -72,23 +83,29 @@
 
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
+
     border-radius: 100px;
     padding: 5px;
 
     width: fit-content;
-    margin: 0 0 26px auto; /* pushes the whole control to the right */
+    margin: 0 0 26px auto;
 }
 
 .booking-tabs button {
     background: transparent;
     border: none;
     color: #cfcfcf;
+
     padding: 10px 24px;
+
     border-radius: 100px;
+
     font-weight: 600;
     font-size: 13.5px;
+
     letter-spacing: 0.01em;
     white-space: nowrap;
+
     transition: 0.2s ease;
     cursor: pointer;
 }
@@ -98,64 +115,124 @@
     background: rgba(255, 255, 255, 0.07);
 }
 
-/*
- * ACTIVE BUTTON — persists after mouse release,
- * unlike :active.
- */
 .booking-tabs button.active,
 .booking-tabs button.active:hover {
     background: linear-gradient(135deg, #ffc233, #ff9900);
     color: #14110a;
+
     box-shadow: 0 4px 14px rgba(255, 176, 0, 0.3);
 }
 
+
 /* =========================================================
-   Fields — unified sizing
-   Every field (text, select, date, time, locked address)
-   shares ONE box model: same box-sizing, same fixed height,
-   same width (100% of its grid column). `min-width: 0` is
-   important here — Bootstrap's `.row` is a flex container,
-   and flex children default to `min-width: auto`, which lets
-   a long value (like a full selected address) push an input
-   wider than its column and throw off row height. Locking
-   min-width to 0 keeps every column — and therefore every
-   input inside it — pinned to the same size regardless of
-   its content.
+   BOOKING FORM
    ========================================================= */
+
+/*
+ * IMPORTANT:
+ * Bootstrap .row uses negative margins and .col-md-6 uses
+ * horizontal padding. These rules make the booking form
+ * columns behave consistently.
+ */
+
+.booking-form {
+    width: 100%;
+    min-width: 0;
+}
+
+.booking-form > .row {
+    width: 100%;
+    min-width: 0;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.booking-form > .row > [class*="col-"] {
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+
+/*
+ * Every booking field has exactly the same dimensions.
+ */
 
 .booking-form input,
 .booking-form select {
     box-sizing: border-box;
+
     display: block;
+
     width: 100%;
+    max-width: 100%;
     min-width: 0;
+
     height: 54px;
+    min-height: 54px;
+    max-height: 54px;
+
+    margin: 0;
+
+    padding: 0 18px 0 48px;
+
     background: rgba(255, 255, 255, 0.035);
+
     border: 1px solid rgba(255, 176, 0, 0.18);
     border-radius: 13px;
-    padding: 0 18px 0 48px;
+
     color: #fff;
+
     font-size: 14.5px;
-    margin: 0;
-    transition: 0.2s ease, font-size 0.1s ease;
+    font-weight: 400;
+
+    line-height: 54px;
+
+    outline: none;
+
     background-repeat: no-repeat;
     background-position: 17px center;
     background-size: 17px 17px;
+
     -webkit-appearance: none;
     appearance: none;
+
+    overflow: hidden;
+
+    transition:
+        border-color 0.2s ease,
+        background-color 0.2s ease,
+        box-shadow 0.2s ease,
+        font-size 0.15s ease;
 }
+
+
+/* Placeholder */
 
 .booking-form input::placeholder {
     color: rgba(255, 255, 255, 0.4);
+    opacity: 1;
 }
+
+
+/* Select */
 
 .booking-form select {
     cursor: pointer;
+
+    line-height: normal;
+
     background-image:
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' fill='none' stroke='white' stroke-opacity='0.5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"),
+
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='9' cy='8' r='3' fill='white' fill-opacity='0.45'/%3E%3Ccircle cx='16' cy='9' r='2.4' fill='white' fill-opacity='0.3'/%3E%3Cpath d='M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6' fill='white' fill-opacity='0.45'/%3E%3C/svg%3E");
-    background-position: right 16px center, 17px center;
-    background-size: 13px 13px, 17px 17px;
+
+    background-position:
+        right 16px center,
+        17px center;
+
+    background-size:
+        13px 13px,
+        17px 17px;
 }
 
 .booking-form select option {
@@ -167,15 +244,25 @@
     background: #ffb000;
 }
 
+
+/* Focus */
+
 .booking-form input:focus,
 .booking-form select:focus {
     outline: none;
+
     border-color: #ffb000;
+
     background-color: rgba(255, 176, 0, 0.06);
-    box-shadow: 0 0 0 3px rgba(255, 176, 0, 0.14);
+
+    box-shadow:
+        0 0 0 3px rgba(255, 176, 0, 0.14);
 }
 
-/* icon per field, by name — no markup changes needed */
+
+/* =========================================================
+   FIELD ICONS
+   ========================================================= */
 
 input[name="name"] {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='8' r='4' fill='white' fill-opacity='0.45'/%3E%3Cpath d='M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8' fill='white' fill-opacity='0.45'/%3E%3C/svg%3E");
@@ -194,55 +281,148 @@ input[name="dropoff_address"] {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C7.6 2 4 5.6 4 10c0 6 8 12 8 12s8-6 8-12c0-4.4-3.6-8-8-8zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6z' fill='white' fill-opacity='0.5'/%3E%3C/svg%3E");
 }
 
+
 /* =========================================================
-   Location Input
+   LOCATION INPUT
    ========================================================= */
 
 .location-input-wrapper {
     position: relative;
+
+    display: block;
+
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    height: 54px;
 }
+
+
+/*
+ * Location input must behave exactly like all other inputs.
+ */
 
 .location-input-wrapper input[name="pickup_address"],
 .location-input-wrapper input[name="dropoff_address"] {
-    padding-right: 50px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    height: 54px;
+    min-height: 54px;
+    max-height: 54px;
+
+    box-sizing: border-box;
+
+    padding-left: 48px;
+    padding-right: 48px;
+
+    margin: 0;
+
+    border-radius: 13px;
+
+    line-height: normal;
+
+    white-space: nowrap;
+    overflow: hidden;
+
+    text-overflow: clip;
 }
 
+
 /*
- * Selected (locked) location.
- * No ellipsis truncation here on purpose — the JS
- * `fitLocationText()` helper shrinks the font size until the
- * full address fits on one line inside the SAME 54px-tall,
- * fixed-width box every other field uses. 13px is just the
- * starting point before JS measures and (if needed) shrinks
- * further.
+ * Selected location.
+ *
+ * It stays inside the SAME input box.
+ * No horizontal scrolling.
+ * No ellipsis.
  */
+
 .location-input-wrapper input[readonly] {
     cursor: default;
+
     color: #ffd580;
-    background-color: rgba(255, 176, 0, 0.05);
+
+    background-color: rgba(255, 255, 255, 0.035);
+
     font-size: 13px;
+    font-weight: 400;
+
+    white-space: nowrap;
     overflow: hidden;
+
+    text-overflow: clip;
+
+    letter-spacing: -0.15px;
 }
+
+
+/*
+ * Keep selected location visually identical to other fields.
+ */
 
 .location-input-wrapper input[readonly]:focus {
     border-color: #ffb000;
-    background-color: rgba(255, 176, 0, 0.08);
-    box-shadow: 0 0 0 3px rgba(255, 176, 0, 0.14);
+
+    background-color: rgba(255, 176, 0, 0.06);
+
+    box-shadow:
+        0 0 0 3px rgba(255, 176, 0, 0.14);
 }
 
-/* ============ Location Clear Button ============ */
+
+/* =========================================================
+   DYNAMIC LOCATION ROW
+   ========================================================= */
+
+/*
+ * Your pickup/dropoff fields are dynamically inserted inside
+ * #dynamic-row.
+
+ * Bootstrap's nested .row can otherwise create different
+ * widths because of its negative margins.
+
+ * These rules make the dynamically-created location columns
+ * align exactly with Name, Email, Phone and Passenger.
+ */
+
+#dynamic-row {
+    width: 100%;
+    min-width: 0;
+
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+#dynamic-row > [class*="col-"] {
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+#dynamic-row .location-input-wrapper {
+    width: 100%;
+    min-width: 0;
+}
+
+
+/* =========================================================
+   LOCATION CLEAR BUTTON
+   ========================================================= */
 
 .location-clear-btn {
     position: absolute;
+
     top: 50%;
     right: 12px;
+
     transform: translateY(-50%);
 
     width: 20px;
     height: 20px;
 
     display: none;
+
     align-items: center;
     justify-content: center;
 
@@ -253,10 +433,12 @@ input[name="dropoff_address"] {
     border-radius: 50%;
 
     background: rgba(255, 255, 255, 0.07);
+
     color: rgba(255, 255, 255, 0.75);
 
     font-size: 13px;
     font-weight: 400;
+
     line-height: 1;
 
     cursor: pointer;
@@ -275,26 +457,43 @@ input[name="dropoff_address"] {
 
 .location-clear-btn:hover {
     background: rgba(255, 176, 0, 0.2);
+
     color: #ffb000;
+
     transform: translateY(-50%) scale(1.06);
 }
 
+
 /* =========================================================
-   Date / Time
-   Whole bar is clickable (see `showPicker()` handler in the
-   Blade file) and shares the exact same height/width as
-   every other field via the unified rule above.
+   DATE / TIME
    ========================================================= */
 
 input[type="date"],
 input[type="time"] {
     color-scheme: dark;
     cursor: pointer;
+
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    height: 54px;
+    min-height: 54px;
+    max-height: 54px;
+
+    box-sizing: border-box;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator,
 input[type="time"]::-webkit-calendar-picker-indicator {
-    filter: invert(72%) sepia(93%) saturate(748%) hue-rotate(360deg) brightness(101%) contrast(101%);
+    filter:
+        invert(72%)
+        sepia(93%)
+        saturate(748%)
+        hue-rotate(360deg)
+        brightness(101%)
+        contrast(101%);
+
     cursor: pointer;
 }
 
@@ -302,21 +501,29 @@ input[type="date"]:invalid {
     border-color: #ff5c5c;
 }
 
-/* ============ Autocomplete dropdown ============ */
+
+/* =========================================================
+   AUTOCOMPLETE DROPDOWN
+   ========================================================= */
 
 #pickup-results,
 #dropoff-results {
     position: absolute;
+
     top: calc(100% + 8px);
     left: 0;
     right: 0;
+
+    width: 100%;
+    max-width: 100%;
 
     background: #0c0c0c;
 
     border: 1px solid rgba(255, 176, 0, 0.2);
     border-radius: 15px;
 
-    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.55);
+    box-shadow:
+        0 18px 44px rgba(0, 0, 0, 0.55);
 
     z-index: 9999;
 
@@ -329,11 +536,12 @@ input[type="date"]:invalid {
     scrollbar-color: #ffb000 #000;
 }
 
+
 /* Chrome / Edge / Safari scrollbar */
 
 #pickup-results::-webkit-scrollbar,
 #dropoff-results::-webkit-scrollbar {
-    width: 8px;
+    width: 7px;
 }
 
 #pickup-results::-webkit-scrollbar-track,
@@ -353,19 +561,25 @@ input[type="date"]:invalid {
     background: #ff9900;
 }
 
-/* ============ Autocomplete item ============ */
+
+/* =========================================================
+   AUTOCOMPLETE ITEM
+   ========================================================= */
 
 .autocomplete-item {
     display: flex;
     align-items: center;
+
     gap: 10px;
 
     padding: 12px 16px;
 
     color: #e6e6e6;
+
     font-size: 13.5px;
 
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom:
+        1px solid rgba(255, 255, 255, 0.05);
 
     cursor: pointer;
 
@@ -398,47 +612,76 @@ input[type="date"]:invalid {
 }
 
 .autocomplete-loading {
-    padding: 14px 16px;
+    padding: 10px 10px;
+
     color: #999;
+
     font-size: 13px;
 }
 
-/* ============ Booking error (same pickup/dropoff, etc.) ============ */
+
+/* =========================================================
+   BOOKING ERROR
+   ========================================================= */
 
 #booking-error {
     border-radius: 12px;
     font-size: 14px;
 }
 
-/* ============ Submit ============ */
+
+/* =========================================================
+   SUBMIT
+   ========================================================= */
 
 .book-btn {
     width: 100%;
-    background: linear-gradient(135deg, #ffc233, #ff9900);
+
+    background: linear-gradient(
+        135deg,
+        #ffc233,
+        #ff9900
+    );
+
     border: none;
+
     padding: 15px;
+
     border-radius: 13px;
+
     font-size: 15.5px;
     font-weight: 700;
+
     letter-spacing: 0.02em;
+
     margin-top: 6px;
+
     transition: 0.25s ease;
+
     color: #14110a;
 }
 
 .book-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 28px rgba(255, 176, 0, 0.32);
+
+    box-shadow:
+        0 12px 28px rgba(255, 176, 0, 0.32);
 }
 
-/* ============ Responsive ============ */
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
 
 @media (max-width: 991px) {
 
     .hero-section {
         min-height: auto;
+
         align-items: center;
+
         padding: 90px 0 40px;
+
         background-attachment: scroll;
     }
 
@@ -462,7 +705,9 @@ input[type="date"]:invalid {
 
     .booking-tabs {
         justify-content: flex-end;
+
         flex-wrap: wrap;
+
         margin: 0 0 22px auto;
     }
 
@@ -471,6 +716,11 @@ input[type="date"]:invalid {
         border-radius: 20px;
     }
 }
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
 
 @media (max-width: 768px) {
 
@@ -485,11 +735,27 @@ input[type="date"]:invalid {
     .booking-form input,
     .booking-form select {
         height: 50px;
+        min-height: 50px;
+        max-height: 50px;
+
         font-size: 13.5px;
+
+        line-height: 50px;
+    }
+
+    .location-input-wrapper {
+        height: 50px;
+    }
+
+    .location-input-wrapper input[name="pickup_address"],
+    .location-input-wrapper input[name="dropoff_address"] {
+        height: 50px;
+        min-height: 50px;
+        max-height: 50px;
     }
 
     .location-input-wrapper input[readonly] {
-        font-size: 12px;
+        font-size: 11.5px;
     }
 
     .booking-card {
@@ -499,53 +765,77 @@ input[type="date"]:invalid {
     .location-clear-btn {
         width: 28px;
         height: 28px;
+
         right: 9px;
+
         font-size: 20px;
     }
 
     .booking-tabs {
         justify-content: flex-end;
+
         width: 100%;
+
         margin-left: 0;
     }
 
     .booking-tabs button {
         padding: 9px 16px;
+
         font-size: 12.5px;
     }
 }
 
-/* ============ Footer ============ */
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
 
 footer.road-footer {
     position: relative;
+
     height: 95px;
-    background: linear-gradient(180deg, #534f45 0%, #140606 100%);
+
+    background:
+        linear-gradient(
+            180deg,
+            #534f45 0%,
+            #140606 100%
+        );
+
     overflow: hidden;
 }
 
 .road-strip {
     position: absolute;
+
     bottom: 20px;
+
     width: 100%;
     height: 4px;
-    background: repeating-linear-gradient(
-        90deg,
-        #f5c518 0 24px,
-        transparent 24px 48px
-    );
+
+    background:
+        repeating-linear-gradient(
+            90deg,
+            #f5c518 0 24px,
+            transparent 24px 48px
+        );
+
     opacity: .6;
 }
 
 .cars-lane {
     position: absolute;
+
     bottom: 28px;
+
     width: 100%;
     height: 60px;
 }
 
 .sv {
     position: absolute;
+
     animation: drive linear infinite;
 }
 
@@ -603,3 +893,4 @@ footer.road-footer {
     background: #ffb000;
     color: #111;
 }
+

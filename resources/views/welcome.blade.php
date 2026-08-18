@@ -56,16 +56,6 @@
                             {{ __('messages.to_airport') }}
                         </button>
 
-                        <!--
-                        <button
-                            type="button"
-                            class="airport-mode-btn"
-                            data-mode="pinToPin"
-                            onclick="setMode('pinToPin')"
-                        >
-                            {{ __('messages.pin_to_pin') }}
-                        </button>
-                        -->
 
                     </div>
 
@@ -83,158 +73,159 @@
                     @enderror
 
                     <!-- Form -->
-                    <form
-                        id="bookingForm"
-                        class="booking-form"
-                        method="POST"
-                        action="{{ url('/booking') }}"
+                   <form
+    id="bookingForm"
+    class="booking-form"
+    method="POST"
+    action="{{ url('/booking') }}"
+>
+
+    @csrf
+
+    <!-- Personal Information -->
+    <div class="row">
+
+        <!-- Name -->
+        <div class="col-md-6 mb-3">
+            <input
+                type="text"
+                name="name"
+                value="{{ old('name') }}"
+                placeholder="{{ __('messages.full_name') }}"
+            >
+
+            @error('name')
+                <small class="text-danger">
+                    {{ $message }}
+                </small>
+            @enderror
+        </div>
+
+        <!-- Email -->
+        <div class="col-md-6 mb-3">
+            <input
+                type="email"
+                name="email"
+                value="{{ old('email') }}"
+                placeholder="{{ __('messages.email') }}"
+            >
+
+            @error('email')
+                <small class="text-danger">
+                    {{ $message }}
+                </small>
+            @enderror
+        </div>
+
+        <!-- Phone -->
+        <div class="col-md-6 mb-3">
+            <input
+                type="text"
+                name="phone"
+                value="{{ old('phone') }}"
+                placeholder="{{ __('messages.phone') }}"
+            >
+
+            @error('phone')
+                <small class="text-danger">
+                    {{ $message }}
+                </small>
+            @enderror
+        </div>
+
+        <!-- Passengers -->
+        <div class="col-md-6 mb-3">
+            <select name="passengers">
+
+                <option value="">
+                    {{ __('messages.select_passenger') }}
+                </option>
+
+                @for ($i = 1; $i <= 10; $i++)
+                    <option
+                        value="{{ $i }}"
+                        {{ old('passengers') == $i ? 'selected' : '' }}
                     >
+                        {{ $i }}
+                    </option>
+                @endfor
 
-                        @csrf
+            </select>
 
-                        <div class="row">
+            @error('passengers')
+                <small class="text-danger">
+                    {{ $message }}
+                </small>
+            @enderror
+        </div>
 
-                            <!-- Name -->
-                            <div class="col-md-6 mb-3">
+    </div>
 
-                                <input
-                                    type="text"
-                                    name="name"
-                                    value="{{ old('name') }}"
-                                    placeholder="{{ __('messages.full_name') }}"
-                                >
 
-                                @error('name')
-                                    <small class="text-danger">
-                                        {{ $message }}
-                                    </small>
-                                @enderror
+    <!-- Pickup / Dropoff -->
+    <!-- IMPORTANT: this is now a separate row -->
+    <div
+        class="row"
+        id="dynamic-row"
+    ></div>
 
-                            </div>
 
-                            <!-- Email -->
-                            <div class="col-md-6 mb-3">
+    <!-- Travel Date / Time -->
+    <div class="row">
 
-                                <input
-                                    type="email"
-                                    name="email"
-                                    value="{{ old('email') }}"
-                                    placeholder="{{ __('messages.email') }}"
-                                >
+        <!-- Travel Date -->
+        <div class="col-md-6 mb-3">
+            <input
+                type="date"
+                name="travel_date"
+                id="travel_date"
+                min="{{ date('Y-m-d') }}"
+                value="{{ old('travel_date') }}"
+            >
 
-                                @error('email')
-                                    <small class="text-danger">
-                                        {{ $message }}
-                                    </small>
-                                @enderror
+            @error('travel_date')
+                <small class="text-danger">
+                    {{ $message }}
+                </small>
+            @enderror
+        </div>
 
-                            </div>
+        <!-- Travel Time -->
+        <div class="col-md-6 mb-3">
+            <input
+                type="time"
+                name="travel_time"
+                id="travel_time"
+                value="{{ old('travel_time') }}"
+            >
 
-                            <!-- Phone -->
-                            <div class="col-md-6 mb-3">
+            @error('travel_time')
+                <small class="text-danger">
+                    {{ $message }}
+                </small>
+            @enderror
+        </div>
 
-                                <input
-                                    type="text"
-                                    name="phone"
-                                    value="{{ old('phone') }}"
-                                    placeholder="{{ __('messages.phone') }}"
-                                >
+    </div>
 
-                                @error('phone')
-                                    <small class="text-danger">
-                                        {{ $message }}
-                                    </small>
-                                @enderror
 
-                            </div>
+    <!-- Submit -->
+    <div class="row">
 
-                            <!-- Passengers -->
-                            <div class="col-md-6 mb-3">
+        <div class="col-12">
 
-                                <select name="passengers">
+            <button
+                class="book-btn"
+                type="submit"
+            >
+                {{ __('messages.book_now') }}
+            </button>
 
-                                    <option value="">
-                                        {{ __('messages.select_passenger') }}
-                                    </option>
+        </div>
 
-                                    @for ($i = 1; $i <= 10; $i++)
+    </div>
 
-                                        <option
-                                            value="{{ $i }}"
-                                            {{ old('passengers') == $i ? 'selected' : '' }}
-                                        >
-                                            {{ $i }}
-                                        </option>
-
-                                    @endfor
-
-                                </select>
-
-                                @error('passengers')
-                                    <small class="text-danger">
-                                        {{ $message }}
-                                    </small>
-                                @enderror
-
-                            </div>
-
-                            <div
-                                class="row"
-                                id="dynamic-row"
-                            ></div>
-
-                            <!-- Travel Date -->
-                            <div class="col-md-6 mb-3">
-
-                                <input
-                                    type="date"
-                                    name="travel_date"
-                                    id="travel_date"
-                                    min="{{ date('Y-m-d') }}"
-                                    value="{{ old('travel_date') }}"
-                                >
-
-                                @error('travel_date')
-                                    <small class="text-danger">
-                                        {{ $message }}
-                                    </small>
-                                @enderror
-
-                            </div>
-
-                            <!-- Travel Time -->
-                            <div class="col-md-6 mb-3">
-
-                                <input
-                                    type="time"
-                                    name="travel_time"
-                                    id="travel_time"
-                                    value="{{ old('travel_time') }}"
-                                >
-
-                                @error('travel_time')
-                                    <small class="text-danger">
-                                        {{ $message }}
-                                    </small>
-                                @enderror
-
-                            </div>
-
-                            <!-- Submit -->
-                            <div class="col-12">
-
-                                <button
-                                    class="book-btn"
-                                    type="submit"
-                                >
-                                    {{ __('messages.book_now') }}
-                                </button>
-
-                            </div>
-
-                        </div>
-
-                    </form>
+</form>
 
                 </div>
 
@@ -296,7 +287,7 @@ function fitLocationText(input) {
         return;
     }
 
-    const maxFontSize = 13;   // matches the CSS default for [readonly]
+    const maxFontSize = 10;   // matches the CSS default for [readonly]
     const minFontSize = 9.5;  // never shrink smaller than this
 
     let fontSize = maxFontSize;
