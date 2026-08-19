@@ -706,8 +706,35 @@ input[name="phone"] {
 }
 
 .location-results:empty {
-    border: none;
+    display: none;
+    height: 0;
+    max-height: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    background: transparent;
     box-shadow: none;
+}
+
+.location-results:not(:empty) {
+    display: block;
+}
+
+#pickup-results:empty,
+#dropoff-results:empty {
+    display: none;
+    height: 0;
+    max-height: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+#pickup-results:not(:empty),
+#dropoff-results:not(:empty) {
+    display: block;
 }
 
 .location-results::-webkit-scrollbar {
@@ -1527,6 +1554,59 @@ function splitAddress(displayName) {
 }
 
 
+function escapeHtml(value) {
+    return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+
+function getLocationState(type) {
+
+    const address = document.getElementById(type + '_address')?.value || '';
+
+    if (!address) {
+        return null;
+    }
+
+    return {
+        display_name: address,
+        lat: document.querySelector(`input[name="${type}_lat"]`)?.value || '',
+        lon: document.querySelector(`input[name="${type}_lng"]`)?.value || '',
+        city: document.querySelector(`input[name="${type}_city"]`)?.value || '',
+        place_id: document.querySelector(`input[name="${type}_place_id"]`)?.value || ''
+    };
+
+}
+
+
+function normalizeLocationText(value) {
+    return String(value || '').trim().replace(/\s+/g, ' ').toLowerCase();
+}
+
+
+function isSameLocation(first, second) {
+
+    if (!first || !second) {
+        return false;
+    }
+
+    if (first.place_id && second.place_id && first.place_id === second.place_id) {
+        return true;
+    }
+
+    if (first.lat && first.lon && second.lat && second.lon) {
+        return first.lat === second.lat && first.lon === second.lon;
+    }
+
+    return normalizeLocationText(first.display_name) === normalizeLocationText(second.display_name);
+
+}
+
+
 // =========================================================
 // 3. Render the markup for one location field (pickup/dropoff)
 // =========================================================
@@ -1537,6 +1617,14 @@ function locationFieldHtml(type, placeholder, prefill) {
 
     const primary = hasPrefill ? splitAddress(prefill.display_name).primary : '';
     const secondary = hasPrefill ? splitAddress(prefill.display_name).secondary : '';
+    const safePlaceholder = escapeHtml(placeholder);
+    const safeDisplayName = hasPrefill ? escapeHtml(prefill.display_name) : '';
+    const safePrimary = hasPrefill ? escapeHtml(primary) : '';
+    const safeSecondary = hasPrefill ? escapeHtml(secondary) : '';
+    const safeLat = hasPrefill ? escapeHtml(prefill.lat) : '';
+    const safeLon = hasPrefill ? escapeHtml(prefill.lon) : '';
+    const safeCity = hasPrefill ? escapeHtml(prefill.city) : '';
+    const safePlaceId = hasPrefill ? escapeHtml(prefill.place_id) : '';
 
     return `
         <div class="col-md-6 mb-3">
@@ -1548,13 +1636,13 @@ function locationFieldHtml(type, placeholder, prefill) {
 
                     <img class="location-icon" src="${LOCATION_PIN_SVG}" alt="" aria-hidden="true">
 
-                    <label for="${type}_address_search" class="sr-only">${placeholder}</label>
+                    <label for="${type}_address_search" class="sr-only">${safePlaceholder}</label>
                     <input
                         type="text"
                         id="${type}_address_search"
                         name="${type}_address_search"
                         autocomplete="off"
-                        placeholder="${placeholder}"
+                        placeholder="${safePlaceholder}"
                     >
 
                     <div class="location-results" id="${type}-results"></div>
@@ -1566,9 +1654,9 @@ function locationFieldHtml(type, placeholder, prefill) {
 
                     <img class="location-chip-icon" src="${LOCATION_PIN_SVG}" alt="" aria-hidden="true">
 
-                    <div class="location-chip-text" title="${hasPrefill ? prefill.display_name : ''}">
-                        <div class="location-chip-primary" id="${type}-chip-primary">${primary}</div>
-                        <div class="location-chip-secondary" id="${type}-chip-secondary">${secondary}</div>
+                    <div class="location-chip-text" title="${safeDisplayName}">
+                        <div class="location-chip-primary" id="${type}-chip-primary">${safePrimary}</div>
+                        <div class="location-chip-secondary" id="${type}-chip-secondary">${safeSecondary}</div>
                     </div>
 
                     <button
@@ -1581,11 +1669,11 @@ function locationFieldHtml(type, placeholder, prefill) {
                 </div>
 
                 <!-- Actual submitted value + place data -->
-                <input type="hidden" name="${type}_address" id="${type}_address" value="${hasPrefill ? prefill.display_name : ''}">
-                <input type="hidden" name="${type}_lat" value="${hasPrefill ? prefill.lat : ''}">
-                <input type="hidden" name="${type}_lng" value="${hasPrefill ? prefill.lon : ''}">
-                <input type="hidden" name="${type}_city" value="${hasPrefill ? prefill.city : ''}">
-                <input type="hidden" name="${type}_place_id" value="${hasPrefill ? prefill.place_id : ''}">
+                <input type="hidden" name="${type}_address" id="${type}_address" value="${safeDisplayName}">
+                <input type="hidden" name="${type}_lat" value="${safeLat}">
+                <input type="hidden" name="${type}_lng" value="${safeLon}">
+                <input type="hidden" name="${type}_city" value="${safeCity}">
+                <input type="hidden" name="${type}_place_id" value="${safePlaceId}">
 
             </div>
 
@@ -1601,10 +1689,23 @@ function locationFieldHtml(type, placeholder, prefill) {
 
 function setMode(type) {
 
+    const currentPickup = getLocationState('pickup');
+    const currentDropoff = getLocationState('dropoff');
+
     setActiveModeButton(type);
 
-    const pickupPrefill = type === 'airportFrom' ? airportData : null;
-    const dropoffPrefill = type === 'airportTo' ? airportData : null;
+    let pickupPrefill = currentPickup;
+    let dropoffPrefill = currentDropoff;
+
+    if (type === 'airportFrom') {
+        pickupPrefill = airportData;
+        dropoffPrefill = isSameLocation(currentDropoff, airportData) ? null : currentDropoff;
+    }
+
+    if (type === 'airportTo') {
+        pickupPrefill = isSameLocation(currentPickup, airportData) ? null : currentPickup;
+        dropoffPrefill = airportData;
+    }
 
     const pickupPlaceholder =
         type === 'airportFrom' ? '{{ __("messages.airport") }}' : '{{ __("messages.pickup") }}';
