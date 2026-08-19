@@ -12,6 +12,26 @@ return [
 
     'requests_per_second' => env('LOCATIONIQ_REQUESTS_PER_SECOND', 2),
 
+    'rate_limit_max_attempts' => env(
+        'LOCATIONIQ_RATE_LIMIT_MAX_ATTEMPTS',
+        env('LOCATIONIQ_REQUESTS_PER_SECOND', 2)
+    ),
+
+    'rate_limit_decay_seconds' => env(
+        'LOCATIONIQ_RATE_LIMIT_DECAY_SECONDS',
+        1
+    ),
+
+    'rate_limit_release_after' => env(
+        'LOCATIONIQ_RATE_LIMIT_RELEASE_AFTER',
+        1
+    ),
+
+    'pending_retry_after_seconds' => env(
+        'LOCATIONIQ_PENDING_RETRY_AFTER_SECONDS',
+        60
+    ),
+
     'allowed_cities' => array_map(
         'trim',
         explode(',', env('LOCATIONIQ_ALLOWED_CITIES', ''))

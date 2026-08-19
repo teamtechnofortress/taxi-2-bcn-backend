@@ -2,8 +2,9 @@
 
 namespace App\Services\Location;
 
-use App\Models\AutocompleteSearch;
 use App\Models\AutocompleteResult;
+use App\Models\AutocompleteSearch;
+use Illuminate\Support\Facades\DB;
 
 class LocationCacheService
 {
@@ -16,12 +17,12 @@ class LocationCacheService
     }
 
     public function createSearch(string $keyword)
-{
-    return AutocompleteSearch::firstOrCreate(
-        ['keyword' => $keyword],
-        ['status' => 'pending']
-    );
-}
+    {
+        return AutocompleteSearch::firstOrCreate(
+            ['keyword' => $keyword],
+            ['status' => 'pending']
+        );
+    }
 
     public function getResults(int $searchId)
     {
@@ -29,29 +30,36 @@ class LocationCacheService
             'search_id',
             $searchId
         )
-        ->limit(8)
-        ->get();
+            ->limit(8)
+            ->get();
     }
 
     public function saveResults(int $searchId, array $results)
-{
-    foreach ($results as $result) {
+    {
+        DB::transaction(function () use ($searchId, $results) {
+            AutocompleteResult::where(
+                'search_id',
+                $searchId
+            )->delete();
 
-        $city = $result['address']['city']
-            ?? $result['address']['town']
-            ?? $result['address']['county']
-            ?? null;
+            foreach ($results as $result) {
 
-        AutocompleteResult::create([
-            'search_id' => $searchId,
-            'place_id' => $result['place_id'] ?? null,
-            'display_name' => $result['display_name'] ?? null,
-            'city' => $city,
-            'lat' => $result['lat'] ?? null,
-            'lon' => $result['lon'] ?? null,
-        ]);
+                $city = $result['address']['city']
+                    ?? $result['address']['town']
+                    ?? $result['address']['county']
+                    ?? null;
+
+                AutocompleteResult::create([
+                    'search_id' => $searchId,
+                    'place_id' => $result['place_id'] ?? null,
+                    'display_name' => $result['display_name'] ?? null,
+                    'city' => $city,
+                    'lat' => $result['lat'] ?? null,
+                    'lon' => $result['lon'] ?? null,
+                ]);
+            }
+        });
     }
-}
 
     public function markCompleted(int $searchId)
     {
@@ -59,16 +67,28 @@ class LocationCacheService
             'id',
             $searchId
         )->update([
-            'status' => 'completed'
+            'status' => 'completed',
         ]);
     }
+
     public function markFailed(int $searchId)
     {
         AutocompleteSearch::where(
             'id',
             $searchId
         )->update([
-            'status' => 'failed'
+            'status' => 'failed',
+        ]);
+    }
+
+    public function markPending(int $searchId)
+    {
+        AutocompleteSearch::where(
+            'id',
+            $searchId
+        )->update([
+            'status' => 'pending',
+            'updated_at' => now(),
         ]);
     }
 }

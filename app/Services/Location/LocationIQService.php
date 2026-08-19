@@ -9,7 +9,7 @@ class LocationIQService
 {
     public function autocomplete(string $keyword): array
     {
-        $url = config('locationiq.base_url') . '/autocomplete.php';
+        $url = config('locationiq.base_url').'/autocomplete.php';
 
         $payload = [
             'key' => config('locationiq.api_key'),
@@ -37,13 +37,15 @@ class LocationIQService
         ]);
 
         // Detect non-JSON / API failure responses
-        if (!$response->successful()) {
+        if (! $response->successful()) {
             Log::error('LocationIQ HTTP ERROR', [
                 'status' => $response->status(),
                 'body' => $response->body(),
             ]);
 
-            return [];
+            throw new \RuntimeException(
+                'LocationIQ request failed with status '.$response->status()
+            );
         }
 
         $json = $response->json();
@@ -53,12 +55,12 @@ class LocationIQService
             'is_array' => is_array($json),
         ]);
 
-        if (!is_array($json)) {
+        if (! is_array($json)) {
             Log::warning('LocationIQ INVALID JSON FORMAT', [
                 'json' => $json,
             ]);
 
-            return [];
+            throw new \RuntimeException('Invalid JSON response from LocationIQ');
         }
 
         return $json;

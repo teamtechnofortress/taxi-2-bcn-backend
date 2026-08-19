@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>@yield('title')</title>
+    <title>@yield('title', config('app.name'))</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/logo_without_bg.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo_without_bg.png') }}">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/main.css') }}">
@@ -14,7 +16,7 @@
 
     @yield('content')
 
-    @include('partials.footer')
+    {{-- @include('partials.footer') --}}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

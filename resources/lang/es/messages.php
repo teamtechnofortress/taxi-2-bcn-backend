@@ -9,6 +9,14 @@ return [
     'from_airport' => 'Desde el aeropuerto',
     'to_airport' => 'Hacia el aeropuerto',
     'pin_to_pin' => 'De punto a punto',
+
+    'form_kicker' => 'Reserva tu viaje',
+    'form_title' => 'Detalles del trayecto',
+    'form_subtitle' => 'Indica tus datos de contacto, la ruta y la hora de recogida.',
+    'passenger_details' => 'Datos del pasajero',
+    'route_details' => 'Recogida y destino',
+    'schedule_details' => 'Fecha y hora',
+
     'full_name' => 'Nombre completo',
     'email' => 'Correo electrónico',
     'phone' => 'Teléfono',

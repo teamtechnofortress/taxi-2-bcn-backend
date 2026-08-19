@@ -2,12 +2,12 @@
 
 namespace App\Jobs;
 
-use App\Services\Location\LocationIQService;
-use App\Services\Location\LocationCacheService;
 use App\Services\Location\LocationAutocompleteService;
-use App\Services\Location\LocationRateLimiter;
+use App\Services\Location\LocationCacheService;
+use App\Services\Location\LocationIQService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Queue\Middleware\RateLimited;
 use Illuminate\Support\Facades\Log;
 
 class FetchLocationIqAutocompleteJob implements ShouldQueue
@@ -15,7 +15,10 @@ class FetchLocationIqAutocompleteJob implements ShouldQueue
     use Queueable;
 
     protected int $searchId;
+
     protected string $keyword;
+
+    public int $tries = 0;
 
     public function __construct(int $searchId, string $keyword)
     {
@@ -23,11 +26,19 @@ class FetchLocationIqAutocompleteJob implements ShouldQueue
         $this->keyword = $keyword;
     }
 
+    public function middleware(): array
+    {
+        return [
+            (new RateLimited('locationiq'))->releaseAfter(
+                (int) config('locationiq.rate_limit_release_after', 1)
+            ),
+        ];
+    }
+
     public function handle(
         LocationIQService $locationIQ,
         LocationCacheService $cache,
-        LocationAutocompleteService $service,
-        LocationRateLimiter $rateLimiter
+        LocationAutocompleteService $service
     ): void {
 
         // $cache->markProcessing($this->searchId);
@@ -66,7 +77,7 @@ class FetchLocationIqAutocompleteJob implements ShouldQueue
                 'search_id' => $this->searchId,
             ]);
 
-            if (!is_array($results)) {
+            if (! is_array($results)) {
                 Log::error('❌ Invalid API response (not array)', [
                     'search_id' => $this->searchId,
                     'response' => $results,
@@ -116,22 +127,9 @@ class FetchLocationIqAutocompleteJob implements ShouldQueue
             ]);
 
             /*
-             * STEP 6: RATE LIMIT TRACKING
+             * STEP 6: MARK COMPLETED
              */
-            Log::info('⏱️ STEP 6: Updating rate limiter', [
-                'search_id' => $this->searchId,
-            ]);
-
-            $rateLimiter->attempt();
-
-            Log::info('✅ STEP 6 COMPLETE: Rate limiter updated', [
-                'search_id' => $this->searchId,
-            ]);
-
-            /*
-             * STEP 7: MARK COMPLETED
-             */
-            Log::info('🏁 STEP 7: Marking job as completed', [
+            Log::info('🏁 STEP 6: Marking job as completed', [
                 'search_id' => $this->searchId,
             ]);
 
