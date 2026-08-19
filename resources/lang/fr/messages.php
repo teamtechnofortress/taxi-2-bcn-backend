@@ -13,6 +13,13 @@ return [
     'to_airport' => 'Vers l’aéroport',
     'pin_to_pin' => 'Point à point',
 
+    'form_kicker' => 'Réservez votre trajet',
+    'form_title' => 'Détails du trajet',
+    'form_subtitle' => 'Indiquez vos coordonnées, votre itinéraire et l’heure de prise en charge souhaitée.',
+    'passenger_details' => 'Informations passager',
+    'route_details' => 'Départ et destination',
+    'schedule_details' => 'Date et heure',
+
     'full_name' => 'Nom complet',
     'email' => 'E-mail',
     'phone' => 'Téléphone',

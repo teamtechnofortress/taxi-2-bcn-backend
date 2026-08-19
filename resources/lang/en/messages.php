@@ -13,6 +13,13 @@ return [
     'to_airport' => 'To Airport',
     'pin_to_pin' => 'Pin to Pin',
 
+    'form_kicker' => 'Book your ride',
+    'form_title' => 'Trip Details',
+    'form_subtitle' => 'Share your contact details, route, and preferred pickup time.',
+    'passenger_details' => 'Passenger details',
+    'route_details' => 'Pickup and drop-off',
+    'schedule_details' => 'Date and time',
+
     'full_name' => 'Full name',
     'email' => 'Email',
     'phone' => 'Your phone number',
