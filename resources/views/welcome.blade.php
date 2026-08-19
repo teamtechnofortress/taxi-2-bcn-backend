@@ -144,7 +144,7 @@ body {
 
 .booking-card {
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     background: linear-gradient(180deg, var(--surface-1) 0%, var(--surface-2) 100%);
 
     backdrop-filter: blur(22px);
@@ -168,6 +168,10 @@ body {
     right: 0;
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(255, 193, 7, 0.65), transparent);
+}
+
+.hero-section .booking-card {
+    overflow: visible !important;
 }
 
 .booking-card-header {
@@ -279,7 +283,7 @@ body {
 
 .airport-mode-btn:hover {
     color: var(--accent-300);
-    background: rgba(255, 193, 7, 0.08);
+    background: rgba(255, 255, 255, 0.055);
     border-color: rgba(255, 193, 7, 0.14);
 }
 
@@ -301,6 +305,78 @@ body {
 
 .airport-mode-btn.active svg {
     opacity: 1;
+}
+
+.booking-tabs .airport-mode-btn:not(.active):hover,
+.booking-tabs .airport-mode-btn[aria-selected="false"]:hover {
+    color: var(--accent-300);
+    background: rgba(255, 255, 255, 0.055);
+    border-color: rgba(255, 193, 7, 0.16);
+    box-shadow: none;
+}
+
+.booking-tabs .airport-mode-btn.active,
+.booking-tabs .airport-mode-btn[aria-selected="true"] {
+    background: linear-gradient(180deg, #ffda70 0%, var(--accent-500) 100%);
+    color: #101216;
+    border-color: rgba(255, 232, 159, 0.5);
+    box-shadow:
+        0 8px 18px rgba(255, 193, 7, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.42);
+}
+
+.booking-card .airport-toggle {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    min-height: 48px !important;
+    padding: 4px !important;
+    background: rgba(18, 18, 30, 0.96) !important;
+    border: 1px solid rgba(154, 167, 189, 0.2) !important;
+    border-radius: var(--radius-pill) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        0 12px 26px rgba(0, 0, 0, 0.18) !important;
+}
+
+.booking-card .airport-toggle .airport-toggle-btn {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    min-width: 136px !important;
+    min-height: 38px !important;
+    padding: 0 18px !important;
+    margin: 0 !important;
+    color: #d6deee !important;
+    background: transparent !important;
+    border: 1px solid transparent !important;
+    border-radius: var(--radius-pill) !important;
+    box-shadow: none !important;
+    font-size: 13.5px !important;
+    font-weight: 750 !important;
+    line-height: 1 !important;
+}
+
+.booking-card .airport-toggle .airport-toggle-btn:not(.active):hover,
+.booking-card .airport-toggle .airport-toggle-btn[aria-selected="false"]:hover {
+    color: var(--accent-300) !important;
+    background: rgba(255, 255, 255, 0.055) !important;
+    border-color: rgba(255, 193, 7, 0.16) !important;
+    box-shadow: none !important;
+}
+
+.booking-card .airport-toggle .airport-toggle-btn.active,
+.booking-card .airport-toggle .airport-toggle-btn[aria-selected="true"] {
+    color: #101216 !important;
+    background: linear-gradient(180deg, #ffda70 0%, var(--accent-500) 100%) !important;
+    border-color: rgba(255, 232, 159, 0.5) !important;
+    box-shadow:
+        0 8px 18px rgba(255, 193, 7, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.42) !important;
 }
 
 
@@ -535,6 +611,11 @@ input[name="phone"] {
     position: relative;
     width: 100%;
     min-width: 0;
+    z-index: 1;
+}
+
+.location-field:focus-within {
+    z-index: 10010;
 }
 
 .location-icon {
@@ -808,6 +889,99 @@ input[name="phone"] {
     font-size: 13px;
 }
 
+.booking-card .bcn-location-results {
+    position: absolute !important;
+    top: calc(100% + 8px) !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 10020 !important;
+    display: block !important;
+    max-height: 238px !important;
+    padding: 6px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    background: rgba(12, 14, 22, 0.98) !important;
+    border: 1px solid rgba(154, 167, 189, 0.18) !important;
+    border-radius: 8px !important;
+    box-shadow:
+        0 18px 44px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: var(--accent-500) rgba(255, 255, 255, 0.08) !important;
+}
+
+.booking-card .bcn-location-results:empty,
+.booking-card #pickup-results.bcn-location-results:empty,
+.booking-card #dropoff-results.bcn-location-results:empty {
+    display: none !important;
+    height: 0 !important;
+    max-height: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.booking-card .bcn-location-results:not(:empty),
+.booking-card #pickup-results.bcn-location-results:not(:empty),
+.booking-card #dropoff-results.bcn-location-results:not(:empty) {
+    display: block !important;
+}
+
+.booking-card .bcn-autocomplete-item {
+    display: grid !important;
+    grid-template-columns: 16px minmax(0, 1fr) !important;
+    align-items: start !important;
+    column-gap: 10px !important;
+    width: 100% !important;
+    min-height: 42px !important;
+    padding: 10px 12px !important;
+    margin: 0 !important;
+    color: var(--text-secondary) !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 6px !important;
+    box-shadow: none !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    line-height: 1.35 !important;
+    text-align: left !important;
+    cursor: pointer !important;
+}
+
+.booking-card .bcn-autocomplete-item::before {
+    content: '' !important;
+    width: 14px !important;
+    height: 14px !important;
+    margin-top: 2px !important;
+    opacity: 0.72 !important;
+    background-repeat: no-repeat !important;
+    background-size: contain !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C7.6 2 4 5.6 4 10c0 6 8 12 8 12s8-6 8-12c0-4.4-3.6-8-8-8zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6z' fill='%23ffd45a'/%3E%3C/svg%3E") !important;
+}
+
+.booking-card .bcn-autocomplete-item:hover,
+.booking-card .bcn-autocomplete-item:focus-visible {
+    color: var(--text-primary) !important;
+    background: rgba(255, 193, 7, 0.1) !important;
+    outline: none !important;
+}
+
+.booking-card .bcn-autocomplete-item + .bcn-autocomplete-item {
+    margin-top: 2px !important;
+}
+
+.booking-card .bcn-autocomplete-message {
+    padding: 11px 12px !important;
+    color: var(--text-muted) !important;
+    background: transparent !important;
+    border: 0 !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    line-height: 1.35 !important;
+}
+
 
 /* =========================================================
    DATE / TIME
@@ -1039,6 +1213,12 @@ input[type="date"]:invalid {
         padding: 0 16px;
     }
 
+    .booking-card .airport-toggle .airport-toggle-btn {
+        min-width: 128px !important;
+        min-height: 36px !important;
+        padding: 0 16px !important;
+    }
+
     .booking-group {
         padding-top: 12px;
         margin-top: 12px;
@@ -1123,6 +1303,17 @@ input[type="date"]:invalid {
         min-width: 0;
         padding: 0 12px;
         font-size: 12.5px;
+    }
+
+    .booking-card .airport-toggle {
+        width: 100% !important;
+    }
+
+    .booking-card .airport-toggle .airport-toggle-btn {
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
+        padding: 0 12px !important;
+        font-size: 12.5px !important;
     }
 
     .booking-submit-row {
@@ -1251,11 +1442,11 @@ footer.road-footer {
                         </div>
 
                         <!-- Tabs -->
-                        <div class="booking-tabs" role="tablist" aria-label="Trip direction">
+                        <div class="booking-tabs airport-toggle" role="tablist" aria-label="Trip direction">
 
                             <button
                                 type="button"
-                                class="airport-mode-btn"
+                                class="airport-mode-btn airport-toggle-btn"
                                 data-mode="airportFrom"
                                 role="tab"
                                 aria-selected="false"
@@ -1272,7 +1463,7 @@ footer.road-footer {
 
                             <button
                                 type="button"
-                                class="airport-mode-btn"
+                                class="airport-mode-btn airport-toggle-btn"
                                 data-mode="airportTo"
                                 role="tab"
                                 aria-selected="false"
@@ -1645,7 +1836,7 @@ function locationFieldHtml(type, placeholder, prefill) {
                         placeholder="${safePlaceholder}"
                     >
 
-                    <div class="location-results" id="${type}-results"></div>
+                    <div class="location-results bcn-location-results" id="${type}-results"></div>
 
                 </div>
 
@@ -1892,7 +2083,7 @@ async function searchAddress(keyword, type) {
     try {
 
         if (box) {
-            box.innerHTML = `<div class="autocomplete-loading">Searching...</div>`;
+            box.innerHTML = `<div class="autocomplete-loading bcn-autocomplete-message">Searching...</div>`;
         }
 
         const response = await fetch(
@@ -1946,14 +2137,14 @@ function renderResults(results, type) {
     box.innerHTML = '';
 
     if (!results || results.length === 0) {
-        box.innerHTML = `<div class="autocomplete-empty">No matches found</div>`;
+        box.innerHTML = `<div class="autocomplete-empty bcn-autocomplete-message">No matches found</div>`;
         return;
     }
 
     results.slice(0, 8).forEach(item => {
 
         const div = document.createElement('div');
-        div.classList.add('autocomplete-item');
+        div.classList.add('autocomplete-item', 'bcn-autocomplete-item');
         div.setAttribute('role', 'option');
         div.setAttribute('tabindex', '0');
         div.textContent = item.display_name;

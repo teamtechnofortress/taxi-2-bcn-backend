@@ -27,19 +27,6 @@
                 +1 234 567 89
             </a>
 
-            <a href="https://wa.me/123456789"
-               class="bcn-icon-btn d-none d-md-inline-flex align-items-center justify-content-center"
-               aria-label="Chat on WhatsApp"
-               target="_blank" rel="noopener">
-
-                <svg width="17" height="17" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-                    <path d="M16.001 3C9.096 3 3.5 8.596 3.5 15.5c0 2.31.63 4.474 1.727 6.33L3 29l7.36-2.164a12.44 12.44 0 0 0 5.641 1.361h.005c6.905 0 12.5-5.596 12.5-12.5S22.906 3 16.001 3z"
-                          fill="currentColor"/>
-                    <path d="M12.4 9.9c-.24-.53-.49-.54-.72-.55-.19-.01-.4-.01-.62-.01-.21 0-.56.08-.85.4-.29.32-1.12 1.09-1.12 2.67 0 1.57 1.15 3.09 1.31 3.3.16.21 2.22 3.56 5.48 4.85 2.71 1.07 3.26.86 3.85.81.59-.05 1.9-.78 2.17-1.53.27-.75.27-1.39.19-1.53-.08-.13-.29-.21-.61-.37-.32-.16-1.9-.94-2.19-1.05-.29-.11-.51-.16-.72.16-.21.32-.83 1.05-1.01 1.26-.19.21-.37.24-.69.08-.32-.16-1.35-.5-2.57-1.58-.95-.85-1.59-1.9-1.78-2.22-.19-.32-.02-.49.14-.65.14-.14.32-.37.48-.56.16-.19.21-.32.32-.53.11-.21.05-.4-.03-.56-.08-.16-.7-1.75-.99-2.4z"
-                          fill="#fff"/>
-                </svg>
-            </a>
-
             <div class="dropdown bcn-lang">
                 <button class="bcn-btn-ghost dropdown-toggle d-inline-flex align-items-center gap-1"
                         type="button"
@@ -82,6 +69,16 @@
         </div>
     </div>
 </header>
+
+<a href="https://wa.me/123456789"
+   class="bcn-floating-whatsapp"
+   aria-label="Chat on WhatsApp"
+   target="_blank"
+   rel="noopener">
+    <svg viewBox="0 0 16 16" aria-hidden="true">
+        <path fill="currentColor" d="M13.601 2.326A7.86 7.86 0 0 0 8.008 0C3.582 0 .002 3.58 0 7.994a7.96 7.96 0 0 0 1.064 3.973L0 16l4.143-1.087a7.95 7.95 0 0 0 3.858.982h.003c4.415 0 7.996-3.58 7.998-7.994a7.95 7.95 0 0 0-2.401-5.575zM8.004 14.54a6.6 6.6 0 0 1-3.356-.92l-.24-.143-2.456.644.656-2.394-.156-.246a6.58 6.58 0 0 1-1.007-3.487c.001-3.616 2.944-6.558 6.562-6.558a6.52 6.52 0 0 1 4.658 1.932 6.54 6.54 0 0 1 1.926 4.63c-.002 3.617-2.945 6.542-6.587 6.542zm3.614-4.922c-.197-.099-1.17-.578-1.353-.644-.182-.066-.315-.099-.445.099-.132.197-.512.644-.627.776-.115.132-.231.148-.428.05-.197-.1-.832-.307-1.584-.979-.586-.522-.981-1.166-1.096-1.364-.115-.197-.012-.304.087-.403.089-.088.197-.23.296-.346.099-.115.132-.197.197-.33.066-.132.033-.247-.016-.346-.05-.099-.446-1.075-.611-1.47-.161-.388-.325-.335-.445-.34-.115-.005-.247-.006-.379-.006a.73.73 0 0 0-.527.247c-.182.198-.692.677-.692 1.652s.709 1.916.807 2.048c.099.132 1.394 2.132 3.383 2.99.473.204.841.326 1.129.417.474.151.906.13 1.248.079.381-.057 1.17-.479 1.336-.941.165-.462.165-.858.115-.941-.049-.083-.181-.132-.378-.231z"/>
+    </svg>
+</a>
 
 <style>
 
@@ -230,26 +227,46 @@
     color: var(--bcn-accent);
 }
 
-/* WhatsApp icon */
+/* Floating WhatsApp */
 
-.bcn-icon-btn {
-    width: 34px;
-    height: 34px;
-    flex: 0 0 auto;
+.bcn-floating-whatsapp {
+    position: fixed;
+    left: 28px;
+    bottom: 30px;
+    z-index: 1100;
 
-    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 
-    color: #25d366;
-    background: rgba(255, 255, 255, 0.035);
+    width: 54px;
+    height: 54px;
+
+    color: #ffffff;
+    background: #25d366;
+    border: 1px solid #25d366;
+    border-radius: 50%;
     text-decoration: none;
 
-    transition: color 0.15s ease, background 0.15s ease;
+    box-shadow: none;
+
+    transition:
+        background 0.16s ease,
+        border-color 0.16s ease;
 }
 
-.bcn-icon-btn:hover,
-.bcn-icon-btn:focus-visible {
-    color: #25d366;
-    background: var(--bcn-surface-hover);
+.bcn-floating-whatsapp:hover,
+.bcn-floating-whatsapp:focus-visible {
+    color: #ffffff;
+    background: #1fbd5a;
+    border-color: #1fbd5a;
+    box-shadow: none;
+}
+
+.bcn-floating-whatsapp svg {
+    display: block;
+    width: 27px;
+    height: 27px;
 }
 
 /* Language switcher */
@@ -353,7 +370,7 @@
 
 .bcn-brand:focus-visible,
 .bcn-link:focus-visible,
-.bcn-icon-btn:focus-visible,
+.bcn-floating-whatsapp:focus-visible,
 .bcn-btn-ghost:focus-visible,
 .bcn-btn-cta:focus-visible,
 .bcn-dropdown .dropdown-item:focus-visible {
@@ -386,6 +403,18 @@
 
     .bcn-btn-cta {
         padding: 8px 14px;
+    }
+
+    .bcn-floating-whatsapp {
+        left: 18px;
+        bottom: 22px;
+        width: 50px;
+        height: 50px;
+    }
+
+    .bcn-floating-whatsapp svg {
+        width: 23px;
+        height: 23px;
     }
 }
 
