@@ -934,6 +934,12 @@ async function searchAddress(
             data.status === 'pending'
         ) {
 
+            const retryAfter =
+                Math.max(
+                    Number(data.retry_after || 2),
+                    1
+                ) * 1000;
+
             console.log(
                 'Still processing... retrying'
             );
@@ -972,7 +978,7 @@ async function searchAddress(
                     }
 
                 },
-                2000
+                retryAfter
             );
 
 
